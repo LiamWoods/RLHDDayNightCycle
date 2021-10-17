@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import javax.swing.*;
 
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -75,30 +74,29 @@ public class RLHDDayNightCyclePlugin extends Plugin
 
 	@Subscribe
 	public void onGameTick(GameTick gameTick) {
-		var timeOfDay = DayLight.getTimeOfDay(LocalTime.now());
-
-		var minBrightness = config.minBrightness();
-		var maxBrightness = config.maxBrightness();
+		int minBrightness = config.minBrightness();
+		int maxBrightness = config.maxBrightness();
 
 		if(config.cycleMode() == DayNightCycleMode.REALTIME){
+			DayLight timeOfDay = DayLight.getTimeOfDay(LocalTime.now());
 			if(timeOfDay == DayLight.NIGHT) {
 				setBrightness(minBrightness);
 				return;
 			}
 
-			var realTimeBrightness = realtimeCycleBrightness(timeOfDay, minBrightness,maxBrightness);
+			int realTimeBrightness = realtimeCycleBrightness(timeOfDay, minBrightness,maxBrightness);
 			setBrightness(realTimeBrightness);
 
 			return;
 		}
 
-		var customStartTime = LocalTime.of(config.customCycleStartHour(), 0);
-		var acceleratedBrightness = customCycleBrightness(customStartTime, minBrightness, maxBrightness);
+		LocalTime customStartTime = LocalTime.of(config.customCycleStartHour(), 0);
+		int acceleratedBrightness = customCycleBrightness(customStartTime, minBrightness, maxBrightness);
 		setBrightness(acceleratedBrightness);
 	}
 
 	private int realtimeCycleBrightness(DayLight timeOfDay, int minBrightness, int maxBrightness) {
-		var daylightPct = timeOfDay.percentageOfDaylight(LocalTime.now());
+		float daylightPct = timeOfDay.percentageOfDaylight(LocalTime.now());
 
 		float brightnessPct = 0;
 		if(daylightPct < 0.25){
@@ -110,21 +108,21 @@ public class RLHDDayNightCyclePlugin extends Plugin
 			brightnessPct = (1 - (daylightPct)) * 100;
 		}
 
-		var brightness = (int) (minBrightness + ((maxBrightness - minBrightness) * (brightnessPct / 100)));
+		int brightness = (int) (minBrightness + ((maxBrightness - minBrightness) * (brightnessPct / 100)));
 
-		var msg = "Daylight %: " + daylightPct + " Brightness: " + brightness;
+		String msg = "Daylight %: " + daylightPct + " Brightness: " + brightness;
 		client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", msg,null);
 
 		return brightness;
 	}
 
 	private int customCycleBrightness(LocalTime startTime, int minBrightness, int maxBrightness) {
-		var cycleHours = config.customCycleHours();
-		var cycleLengthInMs = cycleHours * 60 * 60 * 1000;
+		int cycleHours = config.customCycleHours();
+		int cycleLengthInMs = cycleHours * 60 * 60 * 1000;
 
-		var durationBetween = Duration.between(LocalTime.now(), startTime).toMillis();
+		long durationBetween = Duration.between(LocalTime.now(), startTime).toMillis();
 
-		var daylightPct = (Math.abs((float)durationBetween) % cycleLengthInMs) / cycleLengthInMs;
+		float daylightPct = (Math.abs((float)durationBetween) % cycleLengthInMs) / cycleLengthInMs;
 
 		float brightnessPct = 0;
 		if(daylightPct < 0.25){
@@ -136,9 +134,9 @@ public class RLHDDayNightCyclePlugin extends Plugin
 			brightnessPct = (1 - (daylightPct)) * 4 * 100;
 		}
 
-		var brightness = (int) (minBrightness + ((maxBrightness - minBrightness) * (brightnessPct / 100)));
+		int brightness = (int) (minBrightness + ((maxBrightness - minBrightness) * (brightnessPct / 100)));
 
-		var msg = "Daylight %: " + daylightPct + " Brightness: " + brightness;
+		String msg = "Daylight %: " + daylightPct + " Brightness: " + brightness;
 		client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", msg,null);
 
 		return brightness;
@@ -165,7 +163,7 @@ public class RLHDDayNightCyclePlugin extends Plugin
 		}
 
 		if(event.getGroup() == "hd"){
-			var configChangedStr = event.getGroup() + " " + event.getKey() + " " + event.getNewValue();
+			String configChangedStr = event.getGroup() + " " + event.getKey() + " " + event.getNewValue();
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Config Changed: " + configChangedStr,null);
 		}
 	}
