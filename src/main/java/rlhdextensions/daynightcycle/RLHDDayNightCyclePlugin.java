@@ -47,27 +47,13 @@ public class RLHDDayNightCyclePlugin extends Plugin
 			stopPlugin();
 		}
 
-		log.info("Example started!");
+		log.info("RLHD Day/Night started!");
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
-		log.info("Example stopped!");
-	}
-
-	private boolean ran = false;
-
-	@Subscribe
-	public void onGameStateChanged(GameStateChanged gameStateChanged) {
-		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
-		{
-			if (configManager != null && !ran) {
-				ran = true;
-
-				client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "Config manager not null",null);
-			}
-		}
+		log.info("RLHD Day/Night stopped!");
 	}
 
 	private int currentBrightness;
@@ -110,8 +96,7 @@ public class RLHDDayNightCyclePlugin extends Plugin
 
 		int brightness = (int) (minBrightness + ((maxBrightness - minBrightness) * (brightnessPct / 100)));
 
-		String msg = "Daylight %: " + daylightPct + " Brightness: " + brightness;
-		client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", msg,null);
+		log.info("Daylight %: " + daylightPct + " Brightness: " + brightness);
 
 		return brightness;
 	}
@@ -136,8 +121,7 @@ public class RLHDDayNightCyclePlugin extends Plugin
 
 		int brightness = (int) (minBrightness + ((maxBrightness - minBrightness) * (brightnessPct / 100)));
 
-		String msg = "Daylight %: " + daylightPct + " Brightness: " + brightness;
-		client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", msg,null);
+		log.info("Daylight %: " + daylightPct + " Brightness: " + brightness);
 
 		return brightness;
 	}

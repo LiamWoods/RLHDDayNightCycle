@@ -10,7 +10,6 @@ public enum DayLight {
     DAY(LocalTime.of(6, 0)),
     NIGHT(LocalTime.of(20, 0));
 
-    public static final float CYCLE_LENGTH_ACCELERATED = 0.017f;
     public static final float CYCLE_LENGTH = 14;
 
     public LocalTime startTime;
